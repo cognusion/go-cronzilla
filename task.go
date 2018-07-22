@@ -31,7 +31,11 @@ func ErrorlessTaskFunc(f func()) TaskFunc {
 	}
 }
 
-// Task is our... task
+// Task is our... task. Philosophically, Todo() is run in the goro executing Run(), so in general you should
+// give it it's own. This is done because I believe that if your Task.Run() panics, even though we recover and gracefully
+// handle it, that should be the end of your Task unless you call Run() again. Running Todo() in a separate goro would
+// allow the Task to keep on executing a panic'y Todo(), but that's just not right.
+// If that's important to you, you can write a re-Run()ing wrangler that handles panic cases for you.
 type Task struct {
 	// Todo is a TaskFunc that gets called Every
 	Todo TaskFunc
@@ -39,8 +43,8 @@ type Task struct {
 	Every time.Duration
 	// At is a Time to run Todo()
 	At time.Time
-	// crashed is tracks if Run has exited
-	crashed bool
+	// done is tracks if Run has exited
+	done bool
 }
 
 // Run takes a context and error chan.
@@ -65,7 +69,8 @@ func (t *Task) RunOnce(errorChan chan error) {
 // run actually does the run
 func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 	defer func() {
-		t.crashed = true
+		// When we're done, set done and close the errorChan
+		t.done = true
 		close(errorChan)
 	}()
 	defer func() {
@@ -87,7 +92,7 @@ func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 			}
 		}
 	}()
-	t.crashed = false
+	t.done = false
 
 	if t.At.Unix() > 0 {
 		atChan := make(chan struct{})
@@ -139,7 +144,7 @@ func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 	}
 }
 
-// IsCrashed returns an internal state bool that is set if Run() was called, but has exited
-func (t *Task) IsCrashed() bool {
-	return t.crashed
+// IsDone returns an internal state bool that is set if Run() was called, but has exited because of crash, completion, or cancellation.
+func (t *Task) IsDone() bool {
+	return t.done
 }

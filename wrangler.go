@@ -32,7 +32,7 @@ func (w *Wrangler) ListStale() []string {
 	tasks := make([]string, 0)
 	w.tasks.Range(func(name, wtask interface{}) bool {
 		t := wtask.(wrangledTask).task
-		if t.IsCrashed() {
+		if t.IsDone() {
 			tasks = append(tasks, name.(string))
 		}
 		return true
@@ -54,7 +54,7 @@ func (w *Wrangler) Clean() int {
 	c := 0
 	w.tasks.Range(func(name, wtask interface{}) bool {
 		t := wtask.(wrangledTask).task
-		if t.IsCrashed() {
+		if t.IsDone() {
 			c++
 			w.tasks.Delete(name)
 		}
@@ -78,7 +78,7 @@ func (w *Wrangler) CountStale() int {
 	c := 0
 	w.tasks.Range(func(name, wtask interface{}) bool {
 		t := wtask.(wrangledTask).task
-		if t.IsCrashed() {
+		if t.IsDone() {
 			c++
 		}
 		return true

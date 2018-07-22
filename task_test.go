@@ -39,8 +39,8 @@ OUT:
 		}
 	}
 
-	if !task.IsCrashed() {
-		t.Error("Expected IsCrashed true\n")
+	if !task.IsDone() {
+		t.Error("Expected IsDone true\n")
 	}
 	if counter != 5 {
 		t.Errorf("Expected 5, got %d\n", counter)
@@ -80,8 +80,8 @@ OUT:
 		}
 	}
 
-	if !task.IsCrashed() {
-		t.Error("Expected IsCrashed true\n")
+	if !task.IsDone() {
+		t.Error("Expected IsDone true\n")
 	}
 	if counter != 6 {
 		t.Errorf("Expected 6, got %d\n", counter)
@@ -120,8 +120,8 @@ OUT:
 		}
 	}
 
-	if !task.IsCrashed() {
-		t.Error("Expected IsCrashed true\n")
+	if !task.IsDone() {
+		t.Error("Expected IsDone true\n")
 	}
 	if counter != 1 {
 		t.Errorf("Expected 1, got %d\n", counter)
@@ -156,8 +156,8 @@ OUT:
 		}
 	}
 
-	if !task.IsCrashed() {
-		t.Error("Expected IsCrashed true\n")
+	if !task.IsDone() {
+		t.Error("Expected IsDone true\n")
 	}
 	if counter != 1 {
 		t.Errorf("Expected 1, got %d\n", counter)
@@ -192,8 +192,8 @@ OUT:
 		}
 	}
 
-	if !task.IsCrashed() {
-		t.Error("Expected IsCrashed true\n")
+	if !task.IsDone() {
+		t.Error("Expected IsDone true\n")
 	}
 	if counter < 4 || counter > 6 {
 		t.Errorf("Expected error count 4..6, got %d\n", counter)
@@ -244,8 +244,8 @@ OUT:
 		}
 	}
 
-	if !task.IsCrashed() {
-		t.Error("Expected IsCrashed true\n")
+	if !task.IsDone() {
+		t.Error("Expected IsDone true\n")
 	}
 	if counter > 0 {
 		t.Errorf("Expected 0, got %d\n", counter)
@@ -282,8 +282,8 @@ OUT:
 		}
 	}
 
-	if !task.IsCrashed() {
-		t.Error("Expected IsCrashed true\n")
+	if !task.IsDone() {
+		t.Error("Expected IsDone true\n")
 	}
 	if counter != 1 {
 		t.Errorf("Expected 1, got %d\n", counter)
@@ -319,8 +319,8 @@ OUT:
 		}
 	}
 
-	if !task.IsCrashed() {
-		t.Error("Expected IsCrashed true\n")
+	if !task.IsDone() {
+		t.Error("Expected IsDone true\n")
 	}
 	if counter != 1 {
 		t.Errorf("Expected 1, got %d\n", counter)
