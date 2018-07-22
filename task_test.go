@@ -20,7 +20,8 @@ func Test_TaskRunEvery(t *testing.T) {
 		Todo:  tFunc,
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	defer cancelfunc()
 	go task.Run(ctx, errorChan)
 
 	counter := 0
@@ -60,7 +61,8 @@ func Test_TaskRunAtEvery(t *testing.T) {
 		Todo:  tFunc,
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	defer cancelfunc()
 	go task.Run(ctx, errorChan)
 
 	counter := 0
@@ -99,7 +101,8 @@ func Test_TaskRunAt(t *testing.T) {
 		At:   time.Now().Add(3 * time.Millisecond),
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	defer cancelfunc()
 	go task.Run(ctx, errorChan)
 
 	counter := 0
@@ -136,7 +139,8 @@ func Test_TaskRunAtError(t *testing.T) {
 		At:   time.Now().Add(3 * time.Millisecond),
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	defer cancelfunc()
 	go task.Run(ctx, errorChan)
 
 	counter := 0
@@ -171,7 +175,8 @@ func Test_TaskError(t *testing.T) {
 		Todo:  tFunc,
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	defer cancelfunc()
 	go task.Run(ctx, errorChan)
 
 	counter := 0
@@ -199,10 +204,10 @@ func Test_TaskRunPanic(t *testing.T) {
 
 	pingChan := make(chan int, 10)
 	errorChan := make(chan error, 1)
-	p := false
+	notTime := time.Now().Add(3 * time.Millisecond)
+
 	tFunc := func() error {
-		if !p {
-			p = true
+		if time.Now().Before(notTime) {
 			panic("OMG")
 		}
 		pingChan <- 1
@@ -213,7 +218,8 @@ func Test_TaskRunPanic(t *testing.T) {
 		Todo:  tFunc,
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	defer cancelfunc()
 	go task.Run(ctx, errorChan)
 
 	counter := 0
