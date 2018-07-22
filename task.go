@@ -85,7 +85,7 @@ func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 				err = errors.New(fmt.Sprintf("Unknown error: '%+v'", r))
 			}
 
-			// Don't block if tere isn't a reader
+			// Don't block if there isn't a reader
 			select {
 			case errorChan <- ErrTaskPanicError{gerrors.Wrap(err, 2).ErrorStack()}:
 			default:
@@ -99,7 +99,7 @@ func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 		atTimer := time.AfterFunc(time.Until(t.At), func() {
 			defer func() { close(atChan) }()
 			if e := t.Todo(); e != nil {
-				// Don't block if tere isn't a reader
+				// Don't block if there isn't a reader
 				select {
 				case errorChan <- e:
 				default:
@@ -129,7 +129,7 @@ func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 				return
 			case <-ticker.C:
 				if e := t.Todo(); e != nil {
-					// Don't block if tere isn't a reader
+					// Don't block if there isn't a reader
 					select {
 					case errorChan <- e:
 					default:
