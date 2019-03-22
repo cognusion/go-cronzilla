@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sync/atomic"
 	"time"
 )
 
@@ -44,7 +45,7 @@ type Task struct {
 	// At is a Time to run Todo()
 	At time.Time
 	// done is tracks if Run has exited
-	done bool
+	done atomic.Value
 }
 
 // Run takes a context and error chan.
@@ -70,7 +71,7 @@ func (t *Task) RunOnce(errorChan chan error) {
 func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 	defer func() {
 		// When we're done, set done and close the errorChan
-		t.done = true
+		t.done.Store(true)
 		close(errorChan)
 	}()
 	defer func() {
@@ -92,7 +93,7 @@ func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 			}
 		}
 	}()
-	t.done = false
+	t.done.Store(false)
 
 	if t.At.Unix() > 0 {
 		atChan := make(chan struct{})
@@ -146,5 +147,8 @@ func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 
 // IsDone returns an internal state bool that is set if Run() was called, but has exited because of crash, completion, or cancellation.
 func (t *Task) IsDone() bool {
-	return t.done
+	if l := t.done.Load(); l != nil {
+		return l.(bool)
+	}
+	return false
 }
