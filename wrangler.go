@@ -95,6 +95,12 @@ func (w *Wrangler) Delete(name string) {
 	}
 }
 
+// Exists returns bool if the specified Task exists
+func (w *Wrangler) Exists(name string) bool {
+	_, ok := w.tasks.Load(name)
+	return ok
+}
+
 // AddEvery will include the named task to run every so often, returning an error channel to listen on
 func (w *Wrangler) AddEvery(name string, todo TaskFunc, every time.Duration) <-chan error {
 	errorChan := make(chan error, 1)
