@@ -1,10 +1,9 @@
 package cronzilla
 
 import (
-	gerrors "github.com/go-errors/errors"
+	"github.com/go-errors/errors"
 
 	"context"
-	"errors"
 	"fmt"
 	"sync/atomic"
 	"time"
@@ -79,16 +78,16 @@ func (t *Task) run(ctx context.Context, errorChan chan error, once bool) {
 			var err error
 			switch rt := r.(type) {
 			case string:
-				err = errors.New(rt)
+				err = fmt.Errorf("%s", rt)
 			case error:
 				err = rt
 			default:
-				err = errors.New(fmt.Sprintf("Unknown error: '%+v'", r))
+				err = fmt.Errorf("unknown error: '%+v'", r)
 			}
 
 			// Don't block if there isn't a reader
 			select {
-			case errorChan <- ErrTaskPanicError{gerrors.Wrap(err, 2).ErrorStack()}:
+			case errorChan <- ErrTaskPanicError{errors.Wrap(err, 2).ErrorStack()}:
 			default:
 			}
 		}

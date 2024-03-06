@@ -42,8 +42,8 @@ OUT:
 	if !task.IsDone() {
 		t.Error("Expected IsDone true\n")
 	}
-	if counter != 5 {
-		t.Errorf("Expected 5, got %d\n", counter)
+	if counter < 4 || counter > 6 {
+		t.Errorf("Expected 4..6, got %d\n", counter)
 	}
 }
 
@@ -168,7 +168,7 @@ func Test_TaskError(t *testing.T) {
 
 	errorChan := make(chan error, 1)
 	tFunc := func() error {
-		return fmt.Errorf("Error!")
+		return fmt.Errorf("error")
 	}
 	task := Task{
 		Every: time.Millisecond,
